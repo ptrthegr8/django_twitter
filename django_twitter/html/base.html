@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Django Twitter</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+      <div class="jumbotron jumbotron-fluid" style="margin-bottom: 0px;"">
+          <div class="container">
+            <h1 class="display-4"><a href="/">Django Twitter</a></h1>
+            <p class="lead">Otherwise known as Djitter</p>
+          </div>
+        </div>
+    <!-- Navbar -->
+    <nav class="navbar navbar-light" style="background-color: #B4C5E4">
+      <div class="container">
+        <div class="row">
+          {% if request.user.is_authenticated %}
+          <div class="col-sm"><button><a href="/">Home</a></button></div>
+          <div class="col-sm"><button><a href="/tweet">Tweet</a></button></div>
+          <div class="col-sm"><button><a href="#">Notifications</a></button></div>
+          <div class="col-sm"><button><a href="/{{ user }}">Profile</a></button></div>
+          <div class="col-sm"><button><a href="/logout">Logout</a></button></div>
+          You are currently logged in as: {{ user }} {% endif %}
+        </div>
+      </div>
+    </nav>
+    <!-- End Navbar -->
+    <!-- Main -->
+    <main>{% block main %} {% endblock %}</main>
+    <!-- End Main -->
+
+    <script src="" async defer></script>
+  </body>
+</html>

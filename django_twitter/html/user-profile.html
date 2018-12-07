@@ -1,0 +1,48 @@
+{% extends 'base.html' %} {% block main %}
+<div>
+  <div class="container">
+    <div class="card" class="rounded" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">{{ data.user }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">
+          Tweets: {{ data.tweet_count }}
+        </h6>
+        <h6 class="card-subtitle mb-2 text-muted">
+          Following: {{ data.follow_count }}
+        </h6>
+        {{data.is_following}}
+        {{data.followers}}
+        {% if request.user.is_authenticated and not data.is_following %}
+        <form action="/{{ data.user }}/" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="username" value="{{user}}" />
+          <input type="hidden" name="follow" value="follow" />
+          <input type="submit" value="Follow" />
+        </form>
+        {% elif request.user.is_authenticated and data.is_following %}
+        <form action="/{{ data.user }}/" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="username" value="{{user}}" />
+          <input type="hidden" name="unfollow" value="unfollow" />
+          <input type="submit" value="Unfollow" />
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    {% for tweet in data.tweets %}
+    <h1>Tweet:</h1>
+    <hr />
+    <ul>
+      <li>{{ tweet.text }}</li>
+      <li>
+        <a href="">{{ tweet.user }}</a>
+      </li>
+      <li>{{ tweet.created_at }}</li>
+    </ul>
+    <hr />
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
