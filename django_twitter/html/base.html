@@ -28,7 +28,7 @@
           {% if request.user.is_authenticated %}
           <div class="col-sm"><a class="btn btn-primary" role="button" href="/">Home</a></div>
           <div class="col-sm"><a class="btn btn-primary" role="button" href="/tweet">Tweet</a></div>
-          <div class="col-sm"><a class="btn btn-primary" role="button" href="#">Notifications</a></div>
+          <div class="col-sm"><a class="btn btn-primary" role="button" href="/notifications">Notifications</a></div>
           <div class="col-sm"><a class="btn btn-primary" role="button" href="/{{ user }}">Profile</a></div>
           <div class="col-sm"><a class="btn btn-primary" role="button" href="/logout">Logout</a></div>
           You are currently logged in as: {{ user }} {% endif %}
@@ -37,9 +37,10 @@
     </nav>
     <!-- End Navbar -->
     <!-- Main -->
-    {{data}}
     <main>{% block main %} {% endblock %}</main>
     <!-- End Main -->
+    <div  style="background-color:#B4C5E4; position: relative; left: 0; bottom: 0; width: 100%; margin-top: 10em; height: 50vh">
+    </div>
 
     <script src="" async defer></script>
   </body>

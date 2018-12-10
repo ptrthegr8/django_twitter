@@ -1,4 +1,5 @@
 {% extends 'base.html' %} {% block main %}
+<br>
 <div>
   <div class="container">
     <div class="card" class="rounded" style="width: 18rem;">
@@ -10,8 +11,6 @@
         <h6 class="card-subtitle mb-2 text-muted">
           Following: {{ data.follow_count }}
         </h6>
-        {{data.is_following}}
-        {{data.following}}
         {% if request.user.is_authenticated and not data.is_following %}
         <form action="/{{ data.user }}/" method="POST">
           {% csrf_token %}

@@ -1,4 +1,5 @@
 import re
+from operator import attrgetter
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, reverse
@@ -13,8 +14,13 @@ from django_twitter.forms import LoginForm, SignupForm, TweetForm
 @login_required()
 def homepage(request):
     html = 'homepage.html'
-    data = Tweet.objects.all()
-    return render(request, html, {'data': data})
+    current_twitter_user = TwitterUser.objects.get(user_id=request.user.id)
+    tweets = list(Tweet.objects.filter(user_id=current_twitter_user.id))
+    for influencer in current_twitter_user.following.all():
+        following_tweets = list(Tweet.objects.filter(user=influencer))
+        tweets += following_tweets
+    tweets = sorted(tweets, key=attrgetter('created_at'), reverse=True)
+    return render(request, html, {'data': tweets})
 
 
 def login_user(request):
@@ -66,7 +72,7 @@ def tweet_add(request):
         form = TweetForm(request.user, request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            Tweet.objects.create(
+            tweet = Tweet.objects.create(
                 user=TwitterUser.objects.filter(user_id=data['user']).first(),
                 text=data['text']
             )
@@ -75,6 +81,7 @@ def tweet_add(request):
                 for user in users:
                     Notification.objects.create(
                         user=TwitterUser.objects.get(user__username=user),
+                        tweet=Tweet.objects.filter(text=tweet).first()
                     )
 
             return HttpResponseRedirect(reverse('homepage'))
@@ -97,7 +104,8 @@ def user_profile(request, username):
         'is_following': (
             True if targeted_twitter_user
             in current_twitter_user.following.all() else False
-        )
+        ),
+        'notifications': Notification.objects.filter(user=current_twitter_user).count
     }
     if request.method == "POST":
         if targeted_twitter_user != current_twitter_user:
@@ -117,4 +125,12 @@ def user_profile(request, username):
 def tweet_details(request, tweet_id):
     html = 'tweet-details.html'
     data = Tweet.objects.get(pk=tweet_id)
+    return render(request, html, {'data': data})
+
+
+def notification_details(request):
+    html = 'notification-details.html'
+    data = Notification.objects.filter(user__id=request.user.id)
+    for notification in data:
+        notification.delete()
     return render(request, html, {'data': data})

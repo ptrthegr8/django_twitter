@@ -1,0 +1,14 @@
+{% extends 'base.html' %} {% block main %}
+<br>
+<div class="container">
+{% if data %}
+  {% for item in data %}
+  <div class="card text-center"">
+    <p>{{ item }}</p>
+  </div>
+  {% endfor %}
+{% else %}
+<h1>No notifications</h1>
+{% endif %}
+</div>
+{% endblock %}
