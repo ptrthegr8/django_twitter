@@ -1,10 +1,12 @@
+import re
+
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
-from django_twitter.models import Tweet, TwitterUser
+from django_twitter.models import Tweet, TwitterUser, Notification
 from django_twitter.forms import LoginForm, SignupForm, TweetForm
 
 
@@ -68,6 +70,13 @@ def tweet_add(request):
                 user=TwitterUser.objects.filter(user_id=data['user']).first(),
                 text=data['text']
             )
+            if '@' in data['text']:
+                users = re.findall(r'@(\w+)', data['text'])
+                for user in users:
+                    Notification.objects.create(
+                        user=TwitterUser.objects.get(user__username=user),
+                    )
+
             return HttpResponseRedirect(reverse('homepage'))
     else:
         form = TweetForm(user=request.user)
@@ -78,31 +87,29 @@ def user_profile(request, username):
     html = 'user-profile.html'
     targeted_user = User.objects.filter(username=username).first()
     targeted_twitter_user = TwitterUser.objects.get(user_id=targeted_user.id)
-    current_user = TwitterUser.objects.get(user_id=request.user.id)
+    current_twitter_user = TwitterUser.objects.get(user_id=request.user.id)
     data = {
         'user': targeted_twitter_user,
         'tweets': list(Tweet.objects.filter(user_id=targeted_user.id)),
-        'tweet_count': len(
-            list(Tweet.objects.filter(user_id=targeted_user.id))
-        ),
-        'follow_count': len(list(targeted_twitter_user.follows.all())),
-        'followers': list(str(x) for x in targeted_twitter_user.follows.all()),
+        'tweet_count': Tweet.objects.filter(user_id=targeted_user.id).count,
+        'follow_count': targeted_twitter_user.following.all().count,
+        'following': list(str(x) for x in current_twitter_user.following.all()),
         'is_following': (
-            True if str(request.user) in list(str(x)
-                                              for x in current_user.follows.all()) else False
+            True if targeted_twitter_user
+            in current_twitter_user.following.all() else False
         )
     }
-    print(data)
-    print(request.user)
     if request.method == "POST":
-        if request.POST.get('follow'):
-            current_user.follows.add(
-                targeted_twitter_user.id
-            )
-        elif request.POST.get('unfollow'):
-            current_user.follows.remove(
-                targeted_twitter_user
-            )
+        if targeted_twitter_user != current_twitter_user:
+            if request.POST.get('follow'):
+                current_twitter_user.following.add(
+                    targeted_twitter_user
+                )
+            elif request.POST.get('unfollow'):
+                current_twitter_user.following.remove(
+                    targeted_twitter_user
+                )
+        return HttpResponseRedirect('/{}/'.format(username))
 
     return render(request, html, {'data': data})
 

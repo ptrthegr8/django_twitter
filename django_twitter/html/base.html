@@ -26,17 +26,18 @@
       <div class="container">
         <div class="row">
           {% if request.user.is_authenticated %}
-          <div class="col-sm"><button><a href="/">Home</a></button></div>
-          <div class="col-sm"><button><a href="/tweet">Tweet</a></button></div>
-          <div class="col-sm"><button><a href="#">Notifications</a></button></div>
-          <div class="col-sm"><button><a href="/{{ user }}">Profile</a></button></div>
-          <div class="col-sm"><button><a href="/logout">Logout</a></button></div>
+          <div class="col-sm"><a class="btn btn-primary" role="button" href="/">Home</a></div>
+          <div class="col-sm"><a class="btn btn-primary" role="button" href="/tweet">Tweet</a></div>
+          <div class="col-sm"><a class="btn btn-primary" role="button" href="#">Notifications</a></div>
+          <div class="col-sm"><a class="btn btn-primary" role="button" href="/{{ user }}">Profile</a></div>
+          <div class="col-sm"><a class="btn btn-primary" role="button" href="/logout">Logout</a></div>
           You are currently logged in as: {{ user }} {% endif %}
         </div>
       </div>
     </nav>
     <!-- End Navbar -->
     <!-- Main -->
+    {{data}}
     <main>{% block main %} {% endblock %}</main>
     <!-- End Main -->
 

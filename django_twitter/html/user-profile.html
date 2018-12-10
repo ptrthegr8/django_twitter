@@ -11,20 +11,20 @@
           Following: {{ data.follow_count }}
         </h6>
         {{data.is_following}}
-        {{data.followers}}
+        {{data.following}}
         {% if request.user.is_authenticated and not data.is_following %}
         <form action="/{{ data.user }}/" method="POST">
           {% csrf_token %}
           <input type="hidden" name="username" value="{{user}}" />
           <input type="hidden" name="follow" value="follow" />
-          <input type="submit" value="Follow" />
+          <input class="btn btn-outline-success" type="submit" value="Follow" />
         </form>
         {% elif request.user.is_authenticated and data.is_following %}
         <form action="/{{ data.user }}/" method="POST">
           {% csrf_token %}
           <input type="hidden" name="username" value="{{user}}" />
           <input type="hidden" name="unfollow" value="unfollow" />
-          <input type="submit" value="Unfollow" />
+          <input class="btn btn-outline-danger" type="submit" value="Unfollow" />
         </form>
         {% endif %}
       </div>
@@ -32,17 +32,17 @@
   </div>
   <div class="container">
     {% for tweet in data.tweets %}
-    <h1>Tweet:</h1>
-    <hr />
-    <ul>
-      <li>{{ tweet.text }}</li>
-      <li>
-        <a href="">{{ tweet.user }}</a>
-      </li>
-      <li>{{ tweet.created_at }}</li>
-    </ul>
-    <hr />
+    <hr>
+    <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"><a href="/{{ tweet.user }}">{{ tweet.user }}</a></h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{ tweet.created_at }}</h6>
+          <p class="card-text">{{ tweet.text }}</p>
+          <a href="/tweet/{{ tweet.id }}" class="btn btn-outline-primary">View tweet</a>
+        </div>
+      </div>
     {% endfor %}
   </div>
+
 </div>
 {% endblock %}

@@ -25,6 +25,6 @@ urlpatterns = [
     path('logout/', views.logout_user),
     path('signup/', views.signup_user),
     path('tweet/', views.tweet_add),
-    path('<username>/', views.user_profile),
+    path('<slug:username>/', views.user_profile),
     path('tweet/<int:tweet_id>', views.tweet_details)
 ]

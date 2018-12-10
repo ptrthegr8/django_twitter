@@ -1,18 +1,16 @@
 {% extends 'base.html' %} {% block main %}
 <div class="container">
-  <h1>Tweets:</h1>
+  <h2 style="text-align: center">Home</h2>
   {% for tweet in data %}
   <hr />
-  <div>
-    <ul>
-      <li>
-        <a href="/{{ tweet.user }}">{{ tweet.user }}</a>
-      </li>
-      <li>{{ tweet.text }}</li>
-      <li>{{ tweet.created_at }}</li>
-    </ul>
-  </div>
-  <hr />
+  <div class="card">
+      <div class="card-body">
+        <h5 class="card-title"><a href="/{{ tweet.user }}">{{ tweet.user }}</a></h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{ tweet.created_at }}</h6>
+        <p class="card-text">{{ tweet.text }}</p>
+        <a href="/tweet/{{ tweet.id }}" class="btn btn-outline-primary">View tweet</a>
+      </div>
+    </div>
   {% endfor %}
 </div>
 {% endblock %}
